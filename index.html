@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Table with Column Filters</title>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <!-- Include DataTables JS -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+        }
+        tfoot {
+            display: table-header-group;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Table with Column Filters</h1>
+    <table id="example" class="display">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Office</th>
+                <th>Age</th>
+                <th>Start date</th>
+                <th>Salary</th>
+            </tr>
+        </thead>
+<tfoot>
+    <tr>
+        <th>Name</th>
+        <th>Position</th>
+        <th>
+            <select id="officeFilter">
+                <option value="">Select Office</option>
+                <option value="Edinburgh">Edinburgh</option>
+                <option value="Tokyo">Tokyo</option>
+                <!-- Add more options as needed -->
+            </select>
+        </th>
+        <th>Age</th>
+        <th>Start date</th>
+        <th>Salary</th>
+    </tr>
+</tfoot>
+        <tbody>
+            <tr>
+                <td>Tiger Nixon</td>
+                <td>System Architect</td>
+                <td>Edinburgh</td>
+                <td>61</td>
+                <td>2011/04/25</td>
+                <td>$320,800</td>
+            </tr>
+            <tr>
+                <td>Garrett Winters</td>
+                <td>Accountant</td>
+                <td>Tokyo</td>
+                <td>63</td>
+                <td>2011/07/25</td>
+                <td>$170,750</td>
+            </tr>
+            <!-- Add more rows as needed -->
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function() {
+    // Initialize the DataTable
+    var table = $('#example').DataTable();
+
+    // Create the column filter dropdowns
+    $('#example tfoot th').each(function(index) {
+        if (index !== 2) { // Skip the Office column
+            var title = $(this).text();
+            $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+        }
+    });
+
+    // Apply the column filter for text inputs
+    table.columns().every(function() {
+        var that = this;
+
+        $('input', this.footer()).on('keyup change clear', function() {
+            if (that.search() !== this.value) {
+                that
+                    .search(this.value)
+                    .draw();
+            }
+        });
+    });
+
+    // Apply the column filter for the dropdown
+    $('#officeFilter').on('change', function() {
+        table.column(2).search(this.value).draw();
+    });
+});
+
+    </script>
+</body>
+</html>
